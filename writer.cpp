@@ -19,63 +19,55 @@ int main() {
 	HANDLE write_semaphores[page_count];
 	HANDLE read_semaphores[page_count];
 	HANDLE mtx = OpenMutex(
-		MUTEX_MODIFY_STATE | SYNCHRONIZE, //режим доступа
-		/*изменение значения функцией ReleaseMutex() и
-		использование дескриптора объекта в любой из функций ожидания*/
-		FALSE, //флаг наследования
-		"IOMutex" //имя
+		MUTEX_MODIFY_STATE | SYNCHRONIZE, 
+		FALSE,
+		"IOMutex" 
 	);
-	HANDLE map_file = OpenFileMapping( /*открывает именованный 
-										объект "проецируемый файл"*/
-		GENERIC_READ, //режим доступа
-		FALSE, //флаг наследования
-		"MAPPING" //имя
+	HANDLE map_file = OpenFileMapping( 
+		GENERIC_READ, 
+		FALSE, 
+		"MAPPING"
 	);
-	LPVOID file_view = MapViewOfFile( /*отображает представление 
-	проецируемого файла в адресное пространство вызывающего процесса*/
-		map_file, ////декср. проецируемого файла
-		FILE_MAP_READ, //режим доступа (только для чтения)
-		0, //старшее DWORD смещения файла
-		0, //младшее DWORD смещения файла
-		page_size * page_count //кол-во байт отображения
+	LPVOID file_view = MapViewOfFile(
+		map_file,
+		FILE_MAP_READ, 
+		0, 
+		0,
+		page_size * page_count 
 	);
 	DWORD page = 0;
 
 	for (int i = 0; i < page_count; i++) {
 		write_semaphores[i] = OpenSemaphore(
-			SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, //режим доступа
-			/*изменение значения функцией ReleaseSemaphore() и
-			использование дескриптора объекта в любой из функций ожидания*/
-			FALSE, //флаг наследования
-			("write_semaphore_" + to_string(i)).c_str() //имя
+			SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, 
+			FALSE,
+			("write_semaphore_" + to_string(i)).c_str() 
 		);
 		read_semaphores[i] = OpenSemaphore(
-			SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, //режим доступа
-			/*изменение значения функцией ReleaseSemaphore() и
-			использование дескриптора объекта в любой из функций ожидания*/
-			FALSE, //флаг наследования
-			("read_semaphore_" + to_string(i)).c_str() //имя
+			SEMAPHORE_MODIFY_STATE | SYNCHRONIZE,
+			FALSE,
+			("read_semaphore_" + to_string(i)).c_str()
 		);
 	}
-	VirtualLock( //Блокировка страниц буферной памяти в оперативной памяти
-		file_view, //указатель на начало области страниц для блокировки
-		page_size * page_count //размер области
+	VirtualLock(
+		file_view,
+		page_size * page_count
 	);
 
 	for (int i = 0; i < 2; i++) {
 		page = WaitForMultipleObjects(
-			page_count, //кол-во интересующих объектов
-			write_semaphores, //указатель на массив дескрипторов объектов 
-			FALSE, //режим ожидание (любой первый)
-			INFINITE //время ожидания
+			page_count,
+			write_semaphores,
+			FALSE, 
+			INFINITE 
 		);
 		log(
 			"take semaphore: " + to_string(GetTickCount() % n) + "\n", 
 			page
 		);
 		WaitForSingleObject(
-			mtx, //объект ядра
-			INFINITE //время ожидания
+			mtx,
+			INFINITE 
 		);
 		log(
 			"take mutex: " + to_string(GetTickCount() % n) + "\n", 
@@ -86,15 +78,15 @@ int main() {
 			"write page " + to_string(page) + ": " + to_string(GetTickCount() % n) + "\n", 
 			page
 		);
-		ReleaseMutex(mtx); //освобождение мютекса
+		ReleaseMutex(mtx);
 		log(
 			"free mutex: " + to_string(GetTickCount() % n) + "\n", 
 			page
 		);
 		ReleaseSemaphore(
-			read_semaphores[page], //дескр. семафора
-			1, //значение
-			NULL //переменная для записи пред.значения
+			read_semaphores[page], 
+			1, 
+			NULL
 		);
 		log(
 			"Free semaphore: " + to_string(GetTickCount() % n) + "\n\n", 
