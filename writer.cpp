@@ -15,7 +15,6 @@ void log(string data, DWORD page_number) {
 int main() {
 	const int page_size = 4096;
 	const int page_count = 4;
-	const int n = 1000000;
 	HANDLE write_semaphores[page_count];
 	HANDLE read_semaphores[page_count];
 	HANDLE mtx = OpenMutex(
@@ -62,7 +61,7 @@ int main() {
 			INFINITE 
 		);
 		log(
-			"take semaphore: " + to_string(GetTickCount() % n) + "\n", 
+			"take semaphore: " + to_string(GetTickCount()) + "\n", 
 			page
 		);
 		WaitForSingleObject(
@@ -70,17 +69,17 @@ int main() {
 			INFINITE 
 		);
 		log(
-			"take mutex: " + to_string(GetTickCount() % n) + "\n", 
+			"take mutex: " + to_string(GetTickCount()) + "\n", 
 			page
 		);
 		Sleep(1000);
 		log(
-			"write page " + to_string(page) + ": " + to_string(GetTickCount() % n) + "\n", 
+			"write page " + to_string(page) + ": " + to_string(GetTickCount()) + "\n", 
 			page
 		);
 		ReleaseMutex(mtx);
 		log(
-			"free mutex: " + to_string(GetTickCount() % n) + "\n", 
+			"free mutex: " + to_string(GetTickCount()) + "\n", 
 			page
 		);
 		ReleaseSemaphore(
@@ -89,7 +88,7 @@ int main() {
 			NULL
 		);
 		log(
-			"Free semaphore: " + to_string(GetTickCount() % n) + "\n\n", 
+			"Free semaphore: " + to_string(GetTickCount()) + "\n\n", 
 			page
 		);
 	}
