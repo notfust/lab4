@@ -64,7 +64,7 @@ int main()
 			INFINITE 
 		);
 		log(
-			"take semaphore: " + to_string(GetTickCount() % n) + "\n",
+			"take semaphore: " + to_string(GetTickCount()) + "\n",
 			page
 		);
 		WaitForSingleObject(
@@ -72,17 +72,17 @@ int main()
 			INFINITE 
 		);
 		log(
-			"take mutex: " + to_string(GetTickCount() % n) + "\n",
+			"take mutex: " + to_string(GetTickCount()) + "\n",
 			page
 		);
 		Sleep(500);
 		log(
-			"read page " + to_string(page) + ": " + to_string(GetTickCount() % n) + "\n",
+			"read page " + to_string(page) + ": " + to_string(GetTickCount()) + "\n",
 			page
 		);
 		ReleaseMutex(mtx); 
 		log(
-			"free mutex: " + to_string(GetTickCount() % n) + "\n",
+			"free mutex: " + to_string(GetTickCount()) + "\n",
 			page
 		);
 		ReleaseSemaphore(
@@ -91,7 +91,7 @@ int main()
 			NULL 
 		);
 		log(
-			"free semaphore: " + to_string(GetTickCount() % n) + "\n\n",
+			"free semaphore: " + to_string(GetTickCount()) + "\n\n",
 			page
 		);
 	}
