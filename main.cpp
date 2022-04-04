@@ -75,13 +75,13 @@ int main()
 			NULL, 
 			1, 
 			1, 
-			("write_semaphore_" + to_string(i)).c_str() //èìÿ 
+			("write_semaphore_" + to_string(i)).c_str() 
 		);
 		read_semaphores[i] = CreateSemaphore(
-			NULL, //àòòðèáóòû çàùèòû
-			0, //íà÷àëüíîå çíà÷åíèå ñ÷åò÷èêà
-			1, //ìàêñèìàëüíîå çíà÷åíèå ñ÷åò÷èêà
-			("read_semaphore_" + to_string(i)).c_str() //èìÿ 
+			NULL, 
+			0, 
+			1,
+			("read_semaphore_" + to_string(i)).c_str() 
 		);
 	}
 
@@ -97,10 +97,10 @@ int main()
 	cout << "work" << endl;
 		
 	WaitForMultipleObjects(
-		process_count, //êîë-âî îáúåêòîâ
-		process_handles, //óêàçàòåëü íà ìàññèâ äåñêðèïòîðîâ îáúåêòîâ
-		true, //ðåæèì îæèäàíèÿ (îæèäàíèå âñåõ îáúåêòîâ)
-		INFINITE //âðåìÿ îæèäàíèÿ
+		process_count,
+		process_handles, 
+		true, 
+		INFINITE 
 	);
 
 	cout << "end" << endl;
