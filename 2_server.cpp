@@ -19,7 +19,7 @@ void PrintMenu() {
     cout << "4. Выход\n";
 }
 
-bool ConnectToPipe(HANDLE& hPipe) {
+bool CreateNewPipe(HANDLE& hPipe) {
     hPipe = CreateNamedPipeA(
         "\\\\.\\pipe\\myPipe",
         PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
